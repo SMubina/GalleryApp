@@ -3,6 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
+    <!-- Required to access images for SDK 33+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- Required to access videos for SDK 33+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <!-- Required to access media for SDK < 33 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:name=".GalleryApp"
         android:allowBackup="true"

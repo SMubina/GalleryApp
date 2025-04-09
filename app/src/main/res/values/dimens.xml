@@ -2,7 +2,17 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="_180dp">180dp</dimen>
+    <dimen name="_110dp">110dp</dimen>
     <dimen name="_16dp">16dp</dimen>
+    <dimen name="_12dp">12dp</dimen>
     <dimen name="_8dp">8dp</dimen>
+    <dimen name="_4dp">4dp</dimen>
+    <dimen name="_6dp">6dp</dimen>
+    <dimen name="_2dp">2dp</dimen>
+
+    <dimen name="_16sp">16sp</dimen>
+    <dimen name="_14sp">14sp</dimen>
+    <dimen name="_12sp">12sp</dimen>
+
 
 </resources>

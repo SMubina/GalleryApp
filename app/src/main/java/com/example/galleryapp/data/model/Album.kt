@@ -1,4 +1,4 @@
-package com.example.galleryapp.data
+package com.example.galleryapp.data.model
 
 import android.net.Uri
 import android.os.Parcelable
@@ -6,9 +6,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Album (
+    val id: Long = 0,
     val name: String,
-    val thumbNailUri: Uri,
+    val uri: Uri,
     val pathToThumbNail:String,
     val relativePath:String,
-    val count: Int
+    var count: Int
 ) :Parcelable
