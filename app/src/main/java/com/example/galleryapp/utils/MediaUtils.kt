@@ -10,6 +10,13 @@ import android.provider.MediaStore
  */
 object MediaUtils {
 
+    const val ALL_IMAGE_BUCKET_ID = -1
+    const val ALL_VIDEO_BUCKET_ID = -2
+
+
+
+
+
     /**
      * this represents the uri path for media
      */

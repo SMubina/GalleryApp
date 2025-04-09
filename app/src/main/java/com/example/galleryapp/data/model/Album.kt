@@ -5,11 +5,11 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Album (
+data class Album(
     val id: Long = 0,
     val name: String,
     val uri: Uri,
-    val pathToThumbNail:String,
-    val relativePath:String,
-    var count: Int
-) :Parcelable
+    var count: Int,
+    val pathToThumbNail: String = "",
+    val relativePath: String = "",
+) : Parcelable

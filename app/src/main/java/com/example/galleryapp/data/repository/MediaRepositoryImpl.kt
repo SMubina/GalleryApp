@@ -6,7 +6,6 @@ import com.example.galleryapp.data.mediaquery.MediaFlow
 import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.data.model.Media
 import kotlinx.coroutines.flow.Flow
-
 /**
  * repository class to get the flow data of album and its media
  */

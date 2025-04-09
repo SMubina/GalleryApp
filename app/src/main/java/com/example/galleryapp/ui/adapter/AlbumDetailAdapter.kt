@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.galleryapp.data.model.Media
 import com.example.galleryapp.databinding.ItemAlbumDetailBinding
+import com.example.galleryapp.utils.ext.loadImage
 
 class AlbumDetailAdapter(private val onClick: () -> Unit) :
     ListAdapter<Media, AlbumDetailAdapter.AlbumDetailViewHolder>(AlbumDetailDiffCallback()) {
@@ -15,13 +16,9 @@ class AlbumDetailAdapter(private val onClick: () -> Unit) :
     inner class AlbumDetailViewHolder(private val binding: ItemAlbumDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(album: Media) {
+        fun bind(media: Media) {
 
-            // Load thumbnail using Glide or Coil (Glide here)
-            Glide.with(binding.ivMediaThumbNail.context)
-                .load(album.uri)
-                .centerCrop()
-                .into(binding.ivMediaThumbNail)
+            binding.ivMediaThumbNail.loadImage(media.uri)
 
             binding.root.setOnClickListener {
                 onClick()

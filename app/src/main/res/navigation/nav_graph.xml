@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/AlbumFragment"
         android:name="com.example.galleryapp.ui.AlbumFragment"
-        android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_album">
 
         <action
@@ -22,7 +21,6 @@
     <fragment
         android:id="@+id/AlbumDetailFragment"
         android:name="com.example.galleryapp.ui.AlbumDetailFragment"
-        android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_album_detail">
 
         <argument

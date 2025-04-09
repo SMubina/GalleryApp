@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.databinding.ItemAlbumBinding
+import com.example.galleryapp.utils.ext.loadImage
 
 class AlbumAdapter(
     private val onClick: (Album) -> Unit
@@ -20,11 +20,7 @@ class AlbumAdapter(
             binding.tvAlbumName.text = album.name
             binding.tvAlbumCount.text = "${album.count}"
 
-            // Load thumbnail using Glide or Coil (Glide here)
-            Glide.with(binding.ivAlbumThumbNail.context)
-                .load(album.uri)
-                .centerCrop()
-                .into(binding.ivAlbumThumbNail)
+            binding.ivAlbumThumbNail.loadImage(album.uri)
 
             binding.root.setOnClickListener {
                 onClick(album)
