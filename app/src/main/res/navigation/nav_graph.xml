@@ -3,26 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/AlbumFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.galleryapp.ui.FirstFragment"
+        android:id="@+id/AlbumFragment"
+        android:name="com.example.galleryapp.ui.AlbumFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_album">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_AlbumFragment_to_AlbumDetailFragment"
+            app:destination="@id/AlbumDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.galleryapp.ui.SecondFragment"
+        android:id="@+id/AlbumDetailFragment"
+        android:name="com.example.galleryapp.ui.AlbumDetailFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        tools:layout="@layout/fragment_album_detail">
+
+        <argument
+            android:name="albumId"
+            app:argType="long" />
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_AlbumDetailFragment_to_AlbumFragment"
+            app:destination="@id/AlbumFragment" />
     </fragment>
 </navigation>

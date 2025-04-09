@@ -18,7 +18,7 @@ class AlbumAdapter(
 
         fun bind(album: Album) {
             binding.tvAlbumName.text = album.name
-            binding.tvAlbumCount.text = "(${album.count})"
+            binding.tvAlbumCount.text = "${album.count}"
 
             // Load thumbnail using Glide or Coil (Glide here)
             Glide.with(binding.ivAlbumThumbNail.context)

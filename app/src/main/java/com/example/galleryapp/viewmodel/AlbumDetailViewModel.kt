@@ -2,7 +2,7 @@ package com.example.galleryapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.galleryapp.data.model.Album
+import com.example.galleryapp.data.model.Media
 import com.example.galleryapp.data.repository.MediaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,15 +12,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AlbumViewModel @Inject constructor(private val repository: MediaRepository) : ViewModel() {
+class AlbumDetailViewModel @Inject constructor(private val repository: MediaRepository) : ViewModel() {
 
-    private val _albums = MutableStateFlow<List<Album>>(emptyList())
-    val albums: StateFlow<List<Album>> = _albums.asStateFlow()
+    private val _mediaList = MutableStateFlow<List<Media>>(emptyList())
+    val mediaList: StateFlow<List<Media>> = _mediaList.asStateFlow()
 
-    fun loadAlbums() {
+    fun loadAlbumDetail(albumId:String) {
         viewModelScope.launch {
-            repository.getAlbums().collect {
-                _albums.value = it
+            repository.getMediaByAlbumId(albumId).collect {
+                _mediaList.value = it
             }
         }
     }

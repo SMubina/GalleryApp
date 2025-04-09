@@ -23,6 +23,12 @@ object MediaUtils {
             "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?"
 
     /**
+     * selection describes the query to get image and video inside particular album folder
+     */
+    val AlbumMediaSelection: String = "${MediaStore.Files.FileColumns.BUCKET_ID} = ? AND " +
+            "(${MediaStore.Files.FileColumns.MEDIA_TYPE} = ? OR ${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?)"
+
+    /**
      * This represents the query selection args
      */
     val AlbumsSelectionArgs =  arrayOf(
