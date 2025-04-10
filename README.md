@@ -34,7 +34,7 @@ A modern and responsive **Gallery App** built using **Kotlin**, **Coroutines**, 
 | UI            | RecyclerView, ViewBinding |
 | Async         | Kotlin Coroutines, Flows |
 | Media Access  | `MediaStore`, `ContentResolver`, `ContentObserver` |
-| Image Loader  | Coil |
+| Image Loader  | Glide |
 | Lifecycle     | ViewModel, Lifecycle-aware components |
 | Navigation    | Fragment Navigation
 
@@ -46,7 +46,7 @@ A modern and responsive **Gallery App** built using **Kotlin**, **Coroutines**, 
 1. Clone the repository:
    ```bash
    git clone https://github.com/SMubina/GalleryApp.git
-2. Open the project in Android Studio (Giraffe or newer)
+2. Open the project in Android Studio (newer version)
 3. Connect a physical device(recommended) or use an emulator with media (API 30+)
 4. Run the app
 5. Grant storage/media access permission on launch
