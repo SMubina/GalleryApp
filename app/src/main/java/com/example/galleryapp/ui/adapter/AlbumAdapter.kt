@@ -11,6 +11,10 @@ import com.example.galleryapp.databinding.ItemGridBinding
 import com.example.galleryapp.databinding.ItemListBinding
 import com.example.galleryapp.utils.ext.loadImage
 
+/**
+ * Album adapter for showing album data both in list and grid view
+ * contains two layouts to show to user
+ */
 class AlbumAdapter(private var isGrid: Boolean, private val onItemClick: (Album) -> Unit) :
     ListAdapter<Album, RecyclerView.ViewHolder>(DiffCallback()) {
 
@@ -19,6 +23,9 @@ class AlbumAdapter(private var isGrid: Boolean, private val onItemClick: (Album)
         const val VIEW_TYPE_LIST = 1
     }
 
+    /**
+     * function to toggle layout between grid and list
+     */
     fun toggleLayout(newIsGrid: Boolean) {
         if (isGrid != newIsGrid) {
             isGrid = newIsGrid
@@ -51,6 +58,9 @@ class AlbumAdapter(private var isGrid: Boolean, private val onItemClick: (Album)
         }
     }
 
+    /**
+     * grid view holder class
+     */
     class GridViewHolder(
         private val binding: ItemGridBinding,
         private val onItemClick: (Album) -> Unit
@@ -64,6 +74,9 @@ class AlbumAdapter(private var isGrid: Boolean, private val onItemClick: (Album)
         }
     }
 
+    /**
+     * list view holder class
+     */
     class ListViewHolder(
         private val binding: ItemListBinding,
         private val onItemClick: (Album) -> Unit
@@ -77,6 +90,9 @@ class AlbumAdapter(private var isGrid: Boolean, private val onItemClick: (Album)
         }
     }
 
+    /**
+     * diff util class mainly check content based on uri to avoid unnecessary updates to recyclerview
+     */
     class DiffCallback : DiffUtil.ItemCallback<Album>() {
         override fun areItemsTheSame(oldItem: Album, newItem: Album) = oldItem.uri == newItem.uri
         override fun areContentsTheSame(oldItem: Album, newItem: Album) = oldItem == newItem

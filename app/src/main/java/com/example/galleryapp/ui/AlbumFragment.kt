@@ -30,15 +30,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * Fragment class responsible for showing all the album present under the file system
  */
 @AndroidEntryPoint
 class AlbumFragment : Fragment() {
 
     private var _binding: FragmentAlbumBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val albumViewModel by viewModels<AlbumViewModel>()
@@ -86,6 +83,9 @@ class AlbumFragment : Fragment() {
 
     //region to set up the album adapter and navigation to detail
 
+    /**
+     * initializes the gallery adapter
+     */
     private fun initGalleryAdapter() {
         albumAdapter = AlbumAdapter(isGrid = true) { album ->
             navigateToAlbumDetail(album)
@@ -93,6 +93,9 @@ class AlbumFragment : Fragment() {
         binding.rvAlbum.adapter = albumAdapter
     }
 
+    /**
+     * navigate to album detail
+     */
     private fun navigateToAlbumDetail(album: Album) {
         val action = AlbumFragmentDirections.actionAlbumFragmentToAlbumDetailFragment(album)
         findNavController().navigate(action)
@@ -102,6 +105,10 @@ class AlbumFragment : Fragment() {
 
     //region for the menu setup to switch between grid and list view
 
+    /**
+     * this set up the menu to show the grid and list icons and its click event
+     * uses Menu Provider
+     */
     private fun setupMenu() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -125,6 +132,9 @@ class AlbumFragment : Fragment() {
         }, viewLifecycleOwner,Lifecycle.State.RESUMED)
     }
 
+    /**
+     * this updates the icon for list and grid
+     */
     private fun updateIcon(menu: Menu) {
         val item = menu.findItem(R.id.action_toggle_layout)
         val isGrid = albumViewModel.isGrid.value

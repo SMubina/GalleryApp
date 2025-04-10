@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
- * A simple [Fragment] subclass as the second destination in the navigation.
+ * Fragment class responsible for showing all the album media
  */
 @AndroidEntryPoint
 class AlbumDetailFragment : Fragment() {
@@ -57,6 +57,9 @@ class AlbumDetailFragment : Fragment() {
         loadData()
     }
 
+    /**
+     * function init toolbar
+     */
     private fun initToolBar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         binding.toolbar.title = album.name
@@ -66,6 +69,9 @@ class AlbumDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * function to load data
+     */
     private fun loadData() {
         when (album.id.toInt()) {
             MediaQueryUtils.ALL_IMAGE_BUCKET_ID -> {
@@ -82,6 +88,9 @@ class AlbumDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * function to init adapter
+     */
     private fun initAdapter() {
         binding.rvAlbumMedia.layoutManager = GridLayoutManager(requireContext(), 4)
         adapter = AlbumDetailAdapter {
@@ -105,6 +114,9 @@ class AlbumDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * function to init observer
+     */
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
