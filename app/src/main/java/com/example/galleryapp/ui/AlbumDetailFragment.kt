@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.galleryapp.databinding.FragmentAlbumDetailBinding
 import com.example.galleryapp.ui.adapter.AlbumDetailAdapter
+import com.example.galleryapp.utils.MediaQueryUtils
 import com.example.galleryapp.viewmodel.AlbumDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,10 +47,24 @@ class AlbumDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val albumId = args.albumId.toString()
+        val album = args.album
         initAdapter()
         initObserver()
-        albumDetailViewModel.loadAlbumDetail(albumId = albumId)
+        loadData(album.id)
+    }
+
+    private fun loadData(albumId: Long) {
+        when (albumId.toInt()) {
+            MediaQueryUtils.ALL_IMAGE_BUCKET_ID -> {
+                albumDetailViewModel.loadAllImages()
+            }
+            MediaQueryUtils.ALL_VIDEO_BUCKET_ID -> {
+                albumDetailViewModel.loadAllVideos()
+            }
+            else -> {
+                albumDetailViewModel.loadAlbumMedia(albumId = albumId.toString())
+            }
+        }
     }
 
     private fun initAdapter() {

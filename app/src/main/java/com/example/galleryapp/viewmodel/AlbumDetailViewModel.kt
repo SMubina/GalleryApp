@@ -17,9 +17,25 @@ class AlbumDetailViewModel @Inject constructor(private val repository: MediaRepo
     private val _mediaList = MutableStateFlow<List<Media>>(emptyList())
     val mediaList: StateFlow<List<Media>> = _mediaList.asStateFlow()
 
-    fun loadAlbumDetail(albumId:String) {
+    fun loadAlbumMedia(albumId:String) {
         viewModelScope.launch {
             repository.getMediaByAlbumId(albumId).collect {
+                _mediaList.value = it
+            }
+        }
+    }
+
+    fun loadAllImages() {
+        viewModelScope.launch {
+            repository.getAllImages().collect {
+                _mediaList.value = it
+            }
+        }
+    }
+
+    fun loadAllVideos() {
+        viewModelScope.launch {
+            repository.getAllVideos().collect {
                 _mediaList.value = it
             }
         }

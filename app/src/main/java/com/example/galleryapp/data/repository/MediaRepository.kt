@@ -10,4 +10,8 @@ interface MediaRepository {
 
     fun getMediaByAlbumId(albumId:String): Flow<List<Media>>
 
+    fun getAllImages(): Flow<List<Media>>
+
+    fun getAllVideos(): Flow<List<Media>>
+
 }

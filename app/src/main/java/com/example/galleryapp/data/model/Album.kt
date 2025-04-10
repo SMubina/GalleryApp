@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 data class Album(
     val id: Long = 0,
     val name: String,
-    val uri: Uri,
-    var count: Int,
+    var uri: Uri,
+    var count: Int = 0,
     val pathToThumbNail: String = "",
     val relativePath: String = "",
 ) : Parcelable

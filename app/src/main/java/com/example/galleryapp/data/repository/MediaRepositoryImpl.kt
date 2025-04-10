@@ -2,6 +2,7 @@ package com.example.galleryapp.data.repository
 
 import android.content.Context
 import com.example.galleryapp.data.mediaquery.AlbumFlow
+import com.example.galleryapp.data.mediaquery.AllMediaFlow
 import com.example.galleryapp.data.mediaquery.MediaFlow
 import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.data.model.Media
@@ -17,4 +18,8 @@ class MediaRepositoryImpl(
 
     override fun getMediaByAlbumId(albumId: String): Flow<List<Media>> =
         MediaFlow(context = context, albumId = albumId).flowData()
+
+    override fun getAllImages(): Flow<List<Media>>  = AllMediaFlow(context = context, loadAllImages = true).flowData()
+
+    override fun getAllVideos(): Flow<List<Media>> = AllMediaFlow(context = context).flowData()
 }

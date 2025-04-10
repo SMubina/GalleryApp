@@ -10,22 +10,21 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import com.example.galleryapp.data.model.Album
-import com.example.galleryapp.utils.MediaUtils
+import com.example.galleryapp.utils.MediaQueryUtils
 import com.example.galleryapp.utils.ext.queryFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import java.io.File
 
 class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
 
     override fun flowCursor(): Flow<Cursor?> {
-        val uri = MediaUtils.MediaFileUri
-        val projection = MediaUtils.AlbumsProjection
-        val selection = MediaUtils.AlbumsSelection
-        val selectionArgs = MediaUtils.AlbumsSelectionArgs
-        val sortOrder = MediaUtils.AlbumsSortOrder
+        val uri = MediaQueryUtils.MediaFileUri
+        val projection = MediaQueryUtils.AlbumsProjection
+        val selection = MediaQueryUtils.AlbumsSelection
+        val selectionArgs = MediaQueryUtils.AlbumsSelectionArgs
+        val sortOrder = MediaQueryUtils.AlbumsSortOrder
 
         val queryArgs = Bundle().apply {
             putAll(
@@ -46,55 +45,68 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
     override fun flowData(): Flow<List<Album>> = flowCursor().map { cursor ->
         buildMap<Int, Album> {
             val allImageAlbum = Album(
-                id = MediaUtils.ALL_IMAGE_BUCKET_ID.toLong(),
+                id = MediaQueryUtils.ALL_IMAGE_BUCKET_ID.toLong(),
                 name = "All Images",
-                uri = Uri.EMPTY,
-                count = 1
+                uri = Uri.EMPTY
             )
             val allVideoAlbum = Album(
-                id = MediaUtils.ALL_VIDEO_BUCKET_ID.toLong(),
+                id = MediaQueryUtils.ALL_VIDEO_BUCKET_ID.toLong(),
                 name = "All Videos",
-                uri = Uri.EMPTY,
-                count = 1
+                uri = Uri.EMPTY
             )
-            put(MediaUtils.ALL_IMAGE_BUCKET_ID, allImageAlbum)
-            put(MediaUtils.ALL_VIDEO_BUCKET_ID, allVideoAlbum)
+            put(MediaQueryUtils.ALL_IMAGE_BUCKET_ID, allImageAlbum)
+            put(MediaQueryUtils.ALL_VIDEO_BUCKET_ID, allVideoAlbum)
             cursor?.use {
                 val idIndex = it.getColumnIndex(MediaStore.Files.FileColumns._ID)
                 val albumIdIndex = it.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_ID)
                 val labelIndex = it.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME)
                 val mimeTypeIndex = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)
                 val pathIndex = it.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-                val relativePathIndex = it.getColumnIndex(MediaStore.Files.FileColumns.RELATIVE_PATH)
+                val relativePathIndex =
+                    it.getColumnIndex(MediaStore.Files.FileColumns.RELATIVE_PATH)
 
                 while (it.moveToNext()) {
                     val id = it.getLong(idIndex)
+                    val bucketId = it.getInt(albumIdIndex)
                     val label = it.getString(labelIndex) ?: Build.MODEL
                     val mimeType = it.getString(mimeTypeIndex).orEmpty()
                     val path = it.getString(pathIndex).orEmpty()
                     val relativePath = it.getString(relativePathIndex).orEmpty()
 
+                    val isImage = mimeType.contains("image")
+                    val isVideo = mimeType.contains("video")
                     val contentUri = when {
-                        mimeType.contains("image") -> {
-                            if(isMediaFileAllowed(path)) {allImageAlbum.count += 1}
+                        isImage && isMediaFileAllowed(path) -> {
+                            allImageAlbum.apply {
+                                count++
+                                if (count == 1) uri = ContentUris.withAppendedId(
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    id
+                                )
+                            }
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         }
 
-                        mimeType.contains("video") -> {
-                            allVideoAlbum.count+=1
+                        isVideo -> {
+                            allVideoAlbum.apply {
+                                count++
+                                if (count == 1) uri = ContentUris.withAppendedId(
+                                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                    id
+                                )
+                            }
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                         }
+
                         else -> continue
                     }
-
-                    val bucketId = it.getInt(albumIdIndex)
-                    val album = get(bucketId)
-                    if (album != null) {
-                        album.count += 1
+                    val existingAlbum = get(bucketId)
+                    if (existingAlbum != null) {
+                        existingAlbum.count++
                     } else {
                         put(
                             bucketId, Album(
-                                id = it.getLong(albumIdIndex),
+                                id = bucketId.toLong(),
                                 name = label,
                                 uri = ContentUris.withAppendedId(contentUri, id),
                                 count = 1
@@ -113,8 +125,12 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
         val lowerPath = path.lowercase()
 
         // Exclude known non-user media folders
-        val excludedPaths = listOf("/cache", "/.thumbnails", "/temp", "/.trash", "/snapchat", "/whatsapp/.shared")
+        val excludedPaths =
+            listOf("/cache", "/.thumbnails", "/temp", "/.trash", "/snapchat", "/whatsapp/.shared")
         if (excludedPaths.any { it in lowerPath }) return false else return true
+
+
+        //TODO below logic gives error need to find out the exact root cause
 
 //        return try {
 //            val parentDir = File(path).parentFile
