@@ -3,16 +3,23 @@ package com.example.galleryapp.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.galleryapp.R
 import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.databinding.FragmentAlbumBinding
@@ -35,8 +42,11 @@ class AlbumFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val albumViewModel by viewModels<AlbumViewModel>()
-    private lateinit var adapter: AlbumAdapter
     private lateinit var permissionHelper: PermissionHelper
+    private lateinit var albumAdapter: AlbumAdapter
+
+    // Define grid span count constant
+    private val GRID_SPAN_COUNT = 3
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,26 +59,38 @@ class AlbumFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requestPermission()
-        initAdapter()
+        setupMenu()
+        initGalleryAdapter()
         initObserver()
-    }
-
-    private fun initAdapter() {
-        binding.rvAlbum.layoutManager = GridLayoutManager(requireContext(), 3)
-        adapter = AlbumAdapter { album ->
-            navigateToAlbumDetail(album)
-        }
-        binding.rvAlbum.adapter = adapter
     }
 
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 albumViewModel.albums.collect {
-                    adapter.submitList(it)
+                    albumAdapter.submitList(it)
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                albumViewModel.isGrid.collect { isGrid ->
+                    binding.rvAlbum.layoutManager =
+                        if (isGrid) GridLayoutManager(context, GRID_SPAN_COUNT) else LinearLayoutManager(context)
+                    albumAdapter.toggleLayout(isGrid)
+                }
+            }
+        }
+    }
+
+    //region to set up the album adapter and navigation to detail
+
+    private fun initGalleryAdapter() {
+        albumAdapter = AlbumAdapter(isGrid = true) { album ->
+            navigateToAlbumDetail(album)
+        }
+        binding.rvAlbum.adapter = albumAdapter
     }
 
     private fun navigateToAlbumDetail(album: Album) {
@@ -76,13 +98,45 @@ class AlbumFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    //endregion
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    //region for the menu setup to switch between grid and list view
+
+    private fun setupMenu() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.album_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_toggle_layout -> {
+                        albumViewModel.toggleLayout()
+                        requireActivity().invalidateOptionsMenu() // Update icon
+                        true
+                    }
+                    else -> false
+                }
+            }
+            override fun onPrepareMenu(menu: Menu) {
+                updateIcon(menu)
+            }
+        }, viewLifecycleOwner,Lifecycle.State.RESUMED)
     }
 
+    private fun updateIcon(menu: Menu) {
+        val item = menu.findItem(R.id.action_toggle_layout)
+        val isGrid = albumViewModel.isGrid.value
+        item.icon = ContextCompat.getDrawable(
+            requireContext(),
+            if (isGrid) R.drawable.ic_grid_view else R.drawable.ic_list_view
+        )
+    }
 
+    //endregion
+
+    // region Ask for runtime permissions
     private fun requestPermission(){
         permissionHelper = PermissionHelper(
             caller = this,
@@ -131,5 +185,12 @@ class AlbumFragment : Fragment() {
             }
             .setNegativeButton(getString(R.string.str_cancel), null)
             .show()
+    }
+
+    //endregion
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
