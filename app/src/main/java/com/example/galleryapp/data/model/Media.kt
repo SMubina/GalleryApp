@@ -11,5 +11,6 @@ data class Media (
     val pathToThumbNail:String,
     val relativePath:String,
     var albumID: Long,
-    var albumName: String
+    var albumName: String,
+    var isVideo: Boolean = false
 ) :Parcelable

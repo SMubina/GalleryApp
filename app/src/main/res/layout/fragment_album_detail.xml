@@ -12,7 +12,9 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/str_albums" />
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/str_media"
+        app:subtitle="@string/str_items"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAlbumMedia"

@@ -9,12 +9,10 @@ import android.provider.Settings
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 
 class PermissionHelper(
     private val caller: ActivityResultCaller,
     private val activity: Activity,
-    private val lifecycleOwner: LifecycleOwner,
     private val onPermissionResult: (granted: Boolean) -> Unit
 ) {
     var cameFromSettings: Boolean = false

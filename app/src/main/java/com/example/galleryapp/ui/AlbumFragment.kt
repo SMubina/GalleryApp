@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.galleryapp.R
 import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.databinding.FragmentAlbumBinding
 import com.example.galleryapp.ui.adapter.AlbumAdapter
@@ -85,8 +86,7 @@ class AlbumFragment : Fragment() {
     private fun requestPermission(){
         permissionHelper = PermissionHelper(
             caller = this,
-            activity = requireActivity(),
-            lifecycleOwner = viewLifecycleOwner
+            activity = requireActivity()
         ) { granted ->
             if (granted) {
                 albumViewModel.loadAlbums()
@@ -95,7 +95,6 @@ class AlbumFragment : Fragment() {
                     showGoToSettingsDialog()
                 } else {
                     checkAndRequestPermission()
-//                    Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -110,7 +109,7 @@ class AlbumFragment : Fragment() {
             if (permissionHelper.hasMediaPermissions()) {
                 albumViewModel.loadAlbums()
             } else {
-                Toast.makeText(requireContext(), "Permission still not granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.str_permission_not_granted), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -125,12 +124,12 @@ class AlbumFragment : Fragment() {
 
     private fun showGoToSettingsDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Permission Required")
-            .setMessage("Please grant access to media in Settings to continue.")
-            .setPositiveButton("Go to Settings") { _, _ ->
+            .setTitle(getString(R.string.str_permission_require))
+            .setMessage(getString(R.string.str_grant_access))
+            .setPositiveButton(getString(R.string.str_go_to_settings)) { _, _ ->
                 permissionHelper.openAppSettings()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.str_cancel), null)
             .show()
     }
 }

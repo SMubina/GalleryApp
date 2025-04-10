@@ -1,10 +1,12 @@
 package com.example.galleryapp.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.galleryapp.R
 import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.databinding.ItemAlbumBinding
 import com.example.galleryapp.utils.ext.loadImage
@@ -18,7 +20,8 @@ class AlbumAdapter(
 
         fun bind(album: Album) {
             binding.tvAlbumName.text = album.name
-            binding.tvAlbumCount.text = "${album.count}"
+            binding.tvAlbumCount.text =
+                "${album.count} ".plus(binding.tvAlbumCount.context.getString(R.string.str_items))
 
             binding.ivAlbumThumbNail.loadImage(album.uri)
 

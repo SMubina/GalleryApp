@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
-class MediaFlow(private val context: Context, private val albumId:String) : QueryFlow<Media>() {
+open class MediaFlow(private val context: Context, private val albumId:String) : QueryFlow<Media>() {
 
     override fun flowCursor(): Flow<Cursor?> {
         val uri = MediaQueryUtils.MediaFileUri
@@ -59,9 +59,14 @@ class MediaFlow(private val context: Context, private val albumId:String) : Quer
                     val path = it.getString(pathIndex).orEmpty()
                     val relativePath = it.getString(relativePathIndex).orEmpty()
                     val mimeType = it.getString(mimeTypeIndex).orEmpty()
+                    var isVideo = false
                     val contentUri = when {
                         mimeType.contains("image") -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                        mimeType.contains("video") -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                        mimeType.contains("video") -> {
+                            isVideo = true
+                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                        }
+
                         else -> continue
                     }
                     add(Media(
@@ -70,7 +75,8 @@ class MediaFlow(private val context: Context, private val albumId:String) : Quer
                         pathToThumbNail = path,
                         relativePath = relativePath,
                         albumID = albumId,
-                        albumName = albumName
+                        albumName = albumName,
+                        isVideo = isVideo
                     ))
                 }
             }

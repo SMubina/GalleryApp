@@ -127,22 +127,8 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
         // Exclude known non-user media folders
         val excludedPaths =
             listOf("/cache", "/.thumbnails", "/temp", "/.trash", "/snapchat", "/whatsapp/.shared")
-        if (excludedPaths.any { it in lowerPath }) return false else return true
+        return !excludedPaths.any { it in lowerPath }
 
-
-        //TODO below logic gives error need to find out the exact root cause
-
-//        return try {
-//            val parentDir = File(path).parentFile
-//            if (parentDir == null || !parentDir.exists() || !parentDir.isDirectory) return true
-//
-//            val files = parentDir.listFiles() ?: return true // If listing fails, assume it's okay
-//            files.none { it.name.equals(".nomedia", ignoreCase = true) }
-//        } catch (e: SecurityException) {
-//            true // Permission issues? Don’t block the file
-//        } catch (e: Exception) {
-//            true // Fail-safe in any unexpected case
-//        }
     }
 
 

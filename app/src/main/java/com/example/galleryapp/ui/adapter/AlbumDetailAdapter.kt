@@ -1,11 +1,11 @@
 package com.example.galleryapp.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.galleryapp.data.model.Media
 import com.example.galleryapp.databinding.ItemAlbumDetailBinding
 import com.example.galleryapp.utils.ext.loadImage
@@ -17,8 +17,12 @@ class AlbumDetailAdapter(private val onClick: () -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(media: Media) {
-
             binding.ivMediaThumbNail.loadImage(media.uri)
+            if(media.isVideo){
+                binding.ivVideoPlaceHolder.visibility = View.VISIBLE
+            } else {
+                binding.ivVideoPlaceHolder.visibility = View.GONE
+            }
 
             binding.root.setOnClickListener {
                 onClick()
@@ -27,8 +31,7 @@ class AlbumDetailAdapter(private val onClick: () -> Unit) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumDetailViewHolder {
-        val binding =
-            ItemAlbumDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemAlbumDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AlbumDetailViewHolder(binding)
     }
 
