@@ -10,7 +10,7 @@ import com.example.galleryapp.data.model.Media
 import com.example.galleryapp.databinding.ItemAlbumDetailBinding
 import com.example.galleryapp.utils.ext.loadImage
 
-class AlbumDetailAdapter(private val onClick: () -> Unit) :
+class AlbumDetailAdapter(private val onItemClick: (Media) -> Unit) :
     ListAdapter<Media, AlbumDetailAdapter.AlbumDetailViewHolder>(AlbumDetailDiffCallback()) {
 
     inner class AlbumDetailViewHolder(private val binding: ItemAlbumDetailBinding) :
@@ -25,7 +25,7 @@ class AlbumDetailAdapter(private val onClick: () -> Unit) :
             }
 
             binding.root.setOnClickListener {
-                onClick()
+                onItemClick(media)
             }
         }
     }

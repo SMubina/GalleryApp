@@ -1,10 +1,13 @@
 package com.example.galleryapp.ui
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.galleryapp.R
 import com.example.galleryapp.data.model.Album
+import com.example.galleryapp.data.model.Media
 import com.example.galleryapp.databinding.FragmentAlbumDetailBinding
 import com.example.galleryapp.ui.adapter.AlbumDetailAdapter
 import com.example.galleryapp.utils.MediaQueryUtils
@@ -81,9 +85,24 @@ class AlbumDetailFragment : Fragment() {
     private fun initAdapter() {
         binding.rvAlbumMedia.layoutManager = GridLayoutManager(requireContext(), 4)
         adapter = AlbumDetailAdapter {
-            //TODO can define further events here like image display for editing and video play and many more....
+         openMedia(it)
         }
         binding.rvAlbumMedia.adapter = adapter
+    }
+
+    /**
+     * function to open respective media in external application
+     */
+    private fun openMedia(media: Media) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(media.uri, if (media.isVideo) "video/*" else "image/*")
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), "No app found to open media", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initObserver() {
