@@ -4,6 +4,10 @@ import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+
+/**
+ * model class for album media
+ */
 @Parcelize
 data class Media (
     val id: Long = 0,

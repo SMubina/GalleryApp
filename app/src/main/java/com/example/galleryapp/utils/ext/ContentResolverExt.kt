@@ -18,6 +18,15 @@ import kotlinx.coroutines.sync.withLock
 /**
  * This extension function is mainly used to generate
  * the flow stream from the content resolver query
+ * What is does (Important functionality)
+ * 1. Performs an initial query immediately.
+ * 2. Registers a ContentObserver on the uri.
+ * 3. Whenever the data at that URI changes, it automatically re-queries and emits the updated Cursor.
+ * 4. Uses callbackFlow {} to bridge callback-based APIs into Kotlin Flows.
+ * 5. Ensures thread safety and cancellation using:
+ *      Mutex for synchronization
+ *      CancellationSignal to cancel ongoing queries safely
+ * 6.Uses conflate() to skip intermediate emissions if the consumer is slow (only latest result is kept).
  */
 fun ContentResolver.queryFlow(
     uri: Uri,
@@ -46,7 +55,6 @@ fun ContentResolver.queryFlow(
             }
         }
     }
-
     registerContentObserver(uri, true, observer)
 
     // The first set of values must always be generated and cannot (shouldn't) be cancelled.
@@ -58,6 +66,10 @@ fun ContentResolver.queryFlow(
         }
     }
 
+
+     // called when the flow is cancelled or completed it
+     // Unregisters the observer
+     // Cancels any pending query
     awaitClose {
         // Stop receiving content changes.
         unregisterContentObserver(observer)

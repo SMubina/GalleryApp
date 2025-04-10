@@ -11,12 +11,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * detail view model class to fetch the media in album
+ */
 @HiltViewModel
 class AlbumDetailViewModel @Inject constructor(private val repository: MediaRepository) : ViewModel() {
 
+
+    /**
+     * flow to send album media list
+     */
     private val _mediaList = MutableStateFlow<List<Media>>(emptyList())
     val mediaList: StateFlow<List<Media>> = _mediaList.asStateFlow()
 
+
+    /**
+     * function to load all media present under the album
+     */
     fun loadAlbumMedia(albumId:String) {
         viewModelScope.launch {
             repository.getMediaByAlbumId(albumId).collect {
@@ -25,6 +36,9 @@ class AlbumDetailViewModel @Inject constructor(private val repository: MediaRepo
         }
     }
 
+    /**
+     * function to load media for "All Images" album
+     */
     fun loadAllImages() {
         viewModelScope.launch {
             repository.getAllImages().collect {
@@ -33,6 +47,9 @@ class AlbumDetailViewModel @Inject constructor(private val repository: MediaRepo
         }
     }
 
+    /**
+     * function to load media for "All Video" album
+     */
     fun loadAllVideos() {
         viewModelScope.launch {
             repository.getAllVideos().collect {

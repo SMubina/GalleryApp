@@ -23,7 +23,6 @@ class AlbumDetailAdapter(private val onItemClick: (Media) -> Unit) :
             } else {
                 binding.ivVideoPlaceHolder.visibility = View.GONE
             }
-
             binding.root.setOnClickListener {
                 onItemClick(media)
             }

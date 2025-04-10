@@ -17,8 +17,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
+/**
+ * This class is responsible for fetching all the album folder present
+ */
 class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
 
+    /**
+     * this fun builds the query to fetch the albums data
+     * basically fetches all the media and video present on the system
+     * returns flow of cursor data
+     */
     override fun flowCursor(): Flow<Cursor?> {
         val uri = MediaQueryUtils.MediaFileUri
         val projection = MediaQueryUtils.AlbumsProjection
@@ -35,6 +43,9 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
                 )
             )
         }
+        /**
+         * This build the content resolver query and fetch the flow of cursor data.
+         */
         return context.contentResolver.queryFlow(
             uri,
             projection,
@@ -42,6 +53,13 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
         ).flowOn(Dispatchers.IO)
     }
 
+    /**
+     * This function is responsible for doing various operations on the flow of cursor
+     * mainly categorise media files into album folders
+     * here we are adding "All Images" and " All Videos" manually
+     * as these album folders are not present onto system so need append it
+     * returns flow of data responsible to show to data in UI
+     */
     override fun flowData(): Flow<List<Album>> = flowCursor().map { cursor ->
         buildMap<Int, Album> {
             val allImageAlbum = Album(
@@ -62,21 +80,22 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
                 val labelIndex = it.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME)
                 val mimeTypeIndex = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)
                 val pathIndex = it.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-                val relativePathIndex =
-                    it.getColumnIndex(MediaStore.Files.FileColumns.RELATIVE_PATH)
-
+5
                 while (it.moveToNext()) {
                     val id = it.getLong(idIndex)
                     val bucketId = it.getInt(albumIdIndex)
                     val label = it.getString(labelIndex) ?: Build.MODEL
                     val mimeType = it.getString(mimeTypeIndex).orEmpty()
                     val path = it.getString(pathIndex).orEmpty()
-                    val relativePath = it.getString(relativePathIndex).orEmpty()
 
                     val isImage = mimeType.contains("image")
                     val isVideo = mimeType.contains("video")
                     val contentUri = when {
                         isImage && isMediaFileAllowed(path) -> {
+                            /**
+                             * this will increase the media count for "All Images"
+                             * append the first image Uri
+                             */
                             allImageAlbum.apply {
                                 count++
                                 if (count == 1) uri = ContentUris.withAppendedId(
@@ -88,6 +107,10 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
                         }
 
                         isVideo -> {
+                            /**
+                             * this will increase the media count for "All Videos"
+                             * append the first image Uri
+                             */
                             allVideoAlbum.apply {
                                 count++
                                 if (count == 1) uri = ContentUris.withAppendedId(
@@ -119,17 +142,17 @@ class AlbumFlow(private val context: Context) : QueryFlow<Album>() {
     }.flowOn(Dispatchers.IO)
 
 
+    /**
+     * This function will exclude the images present on the below paths.
+     * All Images folder does not contain images present at below paths
+     */
     private fun isMediaFileAllowed(path: String?): Boolean {
         if (path.isNullOrBlank()) return false
-
         val lowerPath = path.lowercase()
-
         // Exclude known non-user media folders
         val excludedPaths =
             listOf("/cache", "/.thumbnails", "/temp", "/.trash", "/snapchat", "/whatsapp/.shared")
         return !excludedPaths.any { it in lowerPath }
-
     }
-
 
 }

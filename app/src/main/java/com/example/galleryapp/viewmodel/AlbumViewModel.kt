@@ -11,9 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * view model class for album
+ */
 @HiltViewModel
 class AlbumViewModel @Inject constructor(private val repository: MediaRepository) : ViewModel() {
-
 
     /**
      * state flow to maintain state between grid and list layout of albums
@@ -26,7 +28,7 @@ class AlbumViewModel @Inject constructor(private val repository: MediaRepository
     }
 
     /**
-     * state to load items into grid view
+     * state to load album items into grid view
      */
     private val _albums = MutableStateFlow<List<Album>>(emptyList())
     val albums: StateFlow<List<Album>> = _albums.asStateFlow()

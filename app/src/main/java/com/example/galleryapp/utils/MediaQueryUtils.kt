@@ -5,10 +5,19 @@ import android.provider.MediaStore
 
 
 /**
- * this class defines the mime type for image and video
+ * this class defines the required content resolver query params
+ *
+ * projection
+ * selection
+ * selection arguments
+ * sorting order
  */
 object MediaQueryUtils {
 
+    /**
+     * defining static bucket id as we are adding "All Images" and "All Videos"
+     * folder manually not present inside device
+     */
     const val ALL_IMAGE_BUCKET_ID = -1
     const val ALL_VIDEO_BUCKET_ID = -2
 
@@ -35,7 +44,7 @@ object MediaQueryUtils {
 
 
     /**
-     * selection describes the query to get only image and video using query
+     * selection describes the query to get the albums data contain only image and video
      */
     val AlbumsSelection: String = "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ? OR " +
             "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?"

@@ -10,6 +10,10 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 
+
+/**
+ * Permission helper class to request for the required permission
+ */
 class PermissionHelper(
     private val caller: ActivityResultCaller,
     private val activity: Activity,

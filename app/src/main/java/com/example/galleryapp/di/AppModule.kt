@@ -12,15 +12,24 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 
+/**
+ * application module to provide required dependencies
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    /**
+     * provides content resolver dependency
+     */
     @Provides
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
         return context.contentResolver
     }
 
+    /**
+     * provide media repository dependency
+     */
     @Provides
     @Singleton
     fun provideMediaRepository(

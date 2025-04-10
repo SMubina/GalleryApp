@@ -4,6 +4,9 @@ import com.example.galleryapp.data.model.Album
 import com.example.galleryapp.data.model.Media
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * media repository interface
+ */
 interface MediaRepository {
 
     fun getAlbums(): Flow<List<Album>>

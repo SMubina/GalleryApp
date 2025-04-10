@@ -16,8 +16,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
+
+/**
+ * This class is responsible for fetching all the media present under particular album folder
+ */
 open class MediaFlow(private val context: Context, private val albumId:String) : QueryFlow<Media>() {
 
+
+    /**
+     * this fun builds the query to fetch the albums data
+     * basically fetches all the media and video present under particular album
+     * returns flow of cursor data
+     */
     override fun flowCursor(): Flow<Cursor?> {
         val uri = MediaQueryUtils.MediaFileUri
         val projection = MediaQueryUtils.AlbumsProjection
@@ -43,6 +53,12 @@ open class MediaFlow(private val context: Context, private val albumId:String) :
         ).flowOn(Dispatchers.IO)
     }
 
+
+    /**
+     * This function is responsible for doing various operations on the flow of cursor
+     * mainly fetching all the images and videos present under particular album
+     * returns flow of data responsible to show to data in UI
+     */
     override fun flowData(): Flow<List<Media>> = flowCursor().map { cursor ->
         buildList { cursor?.use {
                 val idIndex = it.getColumnIndex(MediaStore.Files.FileColumns._ID)

@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * This class is responsible for fetching data with cursor
- * and actual model type data
+ * and actual data list from cursor
  */
 abstract class QueryFlow<T>  {
 
